@@ -1,9 +1,14 @@
+set(PROJECT_FILES PngImage.h PngImage.cpp)
+
 if(UNIX AND NOT APPLE)
 	set(LINUX TRUE)
 endif()
 
 if(LINUX)
-ADD_EXECUTABLE( MakeAtlas Main.cpp )
+ADD_EXECUTABLE( MakeAtlas 
+	Main.cpp 
+	${PROJECT_FILES}
+)
 find_package(PNG REQUIRED)
 if(PNG_FOUND)
 	include_directories(${PNG_INCLUDE_DIRS})
@@ -15,6 +20,7 @@ if(WIN32)
 set(HEADER_FILES include/png.h include/pngconf.h include/pnglibconf.h include/zconf.h include/zlib.h)
 ADD_EXECUTABLE( MakeAtlas 
 	Main.cpp 
+	${PROJECT_FILES}
 	${HEADER_FILES}
 ) 
 
