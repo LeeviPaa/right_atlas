@@ -1,0 +1,10 @@
+*.vcxproj
+*.cmake
+*.sdf
+*.sln
+*.filters
+*.user
+CMakeCache.txt
+*.tlog
+CMakeFiles/
+*.opensdf
