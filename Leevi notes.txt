@@ -1,0 +1,18 @@
+How to compile
+
+UBUNTU:
+1. install libpng with:
+	sudo apt-get install libpng-dev
+2. install cmake if you dont have it
+	sudo apt-get install cmake
+3. run cmake in root folder (right_atlas)
+	cmake .
+4. compile the project by running make in the root folder
+	make
+
+WINDOWS:
+1. install cmake 
+2. open cmake and find the root folder 
+3. generate the project files
+4. open vs solution (I used vs 2010)
+5. compile the RightAtlas project into executable
