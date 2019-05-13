@@ -4,7 +4,7 @@ endif()
 
 if(LINUX)
 ADD_EXECUTABLE( MakeAtlas Main.cpp )
-find_package(libpng)
+find_package(PNG REQUIRED)
 if(PNG_FOUND)
 	include_directories(${PNG_INCLUDE_DIRS})
 	target_link_libraries(MakeAtlas ${PNG_LIBRARIES})
