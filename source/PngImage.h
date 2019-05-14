@@ -12,8 +12,10 @@ class PngImage
 public:
 	int width, height;
 
-	PngImage(void);
+	PngImage(void){}
 	void OpenImage(char* location);
+	void WritePngFile(char* location);
+	void process_file(void);
 
 private:
 	int x, y;

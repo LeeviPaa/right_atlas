@@ -8,3 +8,11 @@ CMakeCache.txt
 *.tlog
 CMakeFiles/
 *.opensdf
+*.suo
+*.ipch
+*.exe
+*.pdb
+source/MakeAtlas.dir/
+Win32/Debug/ZERO_CHECK/ZERO_CHECK.lastbuildstate
+Win32/
+*.ilk
