@@ -1,3 +1,6 @@
+/*OpenImage-, WritePngFile-, and process_file-
+ *functions based on this example file by Guillaume Cottenceau: http://zarb.org/~gc/html/libpng.html  */
+
 #include "PngImage.h"
 #include <iostream>
 #include <stdlib.h>

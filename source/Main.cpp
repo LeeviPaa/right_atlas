@@ -1,5 +1,6 @@
 #include <iostream>
 #include "PngImage.h"
+#include "dirent.h"
 
 void abortt_(const char * s, ...)
 {
@@ -13,7 +14,25 @@ void abortt_(const char * s, ...)
 
 int main (int argc, char* argv[])
 {
-	if (argc != 3)
+	DIR *dir;
+	struct dirent *ent;
+	if ((dir = opendir (argv[1])) != NULL) {
+	  /* print all the files and directories within directory */
+	  while ((ent = readdir (dir)) != NULL) {
+	    //printf ("%s\n", ent->d_name);
+		char *output = NULL;
+		output = strstr (ent->d_name,".png");
+		if(output) {
+		    printf ("%s\n", ent->d_name);
+		}
+	  }
+	  closedir (dir);
+	} else {
+	  /* could not open directory */
+	  perror ("");
+	  return -1;
+	}
+	/*if (argc != 3)
 	{
 		abortt_("Usage: program_name <file_in> <file_out>");
 	}
@@ -21,6 +40,7 @@ int main (int argc, char* argv[])
 	PngImage image;
 	image.OpenImage(argv[1]);
 	image.process_file();
-	image.WritePngFile(argv[2]);
+	image.WritePngFile(argv[2]);*/
+	system("pause");
 	return 0;
 }
