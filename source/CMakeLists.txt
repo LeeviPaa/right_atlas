@@ -1,4 +1,4 @@
-set(PROJECT_FILES PngImage.h PngImage.cpp, dirent.h )
+set(PROJECT_FILES PngImage.h PngImage.cpp dirent.h )
 
 if(UNIX AND NOT APPLE)
 	set(LINUX TRUE)
