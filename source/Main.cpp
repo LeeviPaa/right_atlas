@@ -1,6 +1,13 @@
 #include <iostream>
 #include "PngImage.h"
+
+#ifdef _WIN32
 #include "dirent.h"
+#endif
+
+#ifdef linux
+#include <dirent.h>
+#endif
 
 void abortt_(const char * s, ...)
 {

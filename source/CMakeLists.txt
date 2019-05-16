@@ -1,4 +1,4 @@
-set(PROJECT_FILES PngImage.h PngImage.cpp dirent.h )
+set(PROJECT_FILES PngImage.h PngImage.cpp )
 
 if(UNIX AND NOT APPLE)
 	set(LINUX TRUE)
@@ -20,6 +20,7 @@ if(WIN32)
 set(HEADER_FILES include/png.h include/pngconf.h include/pnglibconf.h include/zconf.h include/zlib.h)
 ADD_EXECUTABLE( MakeAtlas 
 	Main.cpp 
+	dirent.h
 	${PROJECT_FILES}
 	${HEADER_FILES}
 ) 
