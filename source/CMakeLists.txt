@@ -1,4 +1,4 @@
-set(PROJECT_FILES PngImage.h PngImage.cpp )
+set(PROJECT_FILES PngImage.h PngImage.cpp Atlas.h, Atlas.cpp )
 
 if(UNIX AND NOT APPLE)
 	set(LINUX TRUE)

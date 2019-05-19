@@ -13,11 +13,10 @@ public:
 	int width, height;
 
 	PngImage(void){}
-	void OpenImage(char* location);
-	void WritePngFile(char* location);
+	int OpenImage(const char* location);
+	void SavePngFile(char* location);
 	void process_file(void);
 
-private:
 	int x, y;
 	png_byte color_type;
 	png_byte bit_depth;
