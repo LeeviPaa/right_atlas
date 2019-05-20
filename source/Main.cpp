@@ -1,6 +1,7 @@
 #include <iostream>
 #include <vector>
 #include <string>
+#include <algorithm>
 #include "PngImage.h"
 #include "Atlas.h"
 
@@ -21,6 +22,8 @@ void abortt_(const char * s, ...)
         va_end(args);
         abort();
 }
+
+
 
 int main (int argc, char* argv[])
 {
@@ -63,6 +66,7 @@ int main (int argc, char* argv[])
 		}
 	  }
 	  closedir (dir);
+	  std::sort(images.begin(), images.end(), PngImage::CompareImageSize);
 	} 
 	else 
 	{

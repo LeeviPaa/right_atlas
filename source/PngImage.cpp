@@ -63,9 +63,10 @@ int PngImage::OpenImage(const char* file_name)
 
     width = png_get_image_width(png_ptr, info_ptr);
     height = png_get_image_height(png_ptr, info_ptr);
+	area = width*height;
     color_type = png_get_color_type(png_ptr, info_ptr);
 
-	if(color_type != 2)
+	if(color_type != 2 && color_type != 6)
 	{
 		std::cout << "we dont yet support other color types than RGB!" << std::endl;
 		return -1;
