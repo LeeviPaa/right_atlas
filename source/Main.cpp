@@ -13,18 +13,6 @@
 #include <dirent.h>
 #endif
 
-void abortt_(const char * s, ...)
-{
-        va_list args;
-        va_start(args, s);
-        vfprintf(stderr, s, args);
-        fprintf(stderr, "\n");
-        va_end(args);
-        abort();
-}
-
-
-
 int main (int argc, char* argv[])
 {
 	if (argc != 3)
@@ -59,7 +47,7 @@ int main (int argc, char* argv[])
 			imgPath.append(path);
 			imgPath.append(ent->d_name);
 
-			if(image->OpenImage(imgPath.c_str()) == 0)
+			if(image->OpenImage(imgPath.c_str(), ent->d_name) == 0)
 				images.push_back(image);
 			else
 				delete(image);
@@ -80,6 +68,7 @@ int main (int argc, char* argv[])
 	{
 		PngImage* imgPtr = images[0];
 		atlas.SaveAtlas("Dump/Atlas.png", "image", images);
+		atlas.SaveMetadata(images);
 	}
 	else
 	{

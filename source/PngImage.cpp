@@ -11,22 +11,25 @@
 #define PNG_DEBUG 3
 #include <png.h>
 
-void abort_(const char * s, ...)
+PngImage::~PngImage()
 {
-        va_list args;
-        va_start(args, s);
-        vfprintf(stderr, s, args);
-        fprintf(stderr, "\n");
-        va_end(args);
-        abort();
+	if(row_pointers == nullptr)
+		return;
+
+	for (int y=0; y<height; y++)
+        delete[](row_pointers[y]);
+    delete[](row_pointers);
 }
 
-int PngImage::OpenImage(const char* file_name)
+int PngImage::OpenImage(const char* file_path, const char* file_name)
 {
+	if(row_pointers != nullptr)
+		return -1;
+
     char header[8];    // 8 is the maximum size that can be checked
 
     /* open file and test for it being a png */
-    FILE *fp = fopen(file_name, "rb");
+    FILE *fp = fopen(file_path, "rb");
     if (!fp)
 	{
             std::cout <<"[read_png_file] File %s could not be opened for reading" << file_name << std::endl;
@@ -63,6 +66,7 @@ int PngImage::OpenImage(const char* file_name)
 
     width = png_get_image_width(png_ptr, info_ptr);
     height = png_get_image_height(png_ptr, info_ptr);
+	name = file_name;
 	area = width*height;
     color_type = png_get_color_type(png_ptr, info_ptr);
 
@@ -90,9 +94,10 @@ int PngImage::OpenImage(const char* file_name)
 			return -1;
 	}
 
-    row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * height);
-    for (y=0; y<height; y++)
-            row_pointers[y] = (png_byte*) malloc(png_get_rowbytes(png_ptr,info_ptr));
+	row_pointers = new png_bytep[height];
+    for (int y=0; y<height; y++)
+		row_pointers[y] = new png_byte[width*4];
+			
 
     png_read_image(png_ptr, row_pointers);
 
@@ -104,29 +109,39 @@ void PngImage::SavePngFile(char* file_name)
 {
     /* create file */
     FILE *fp = fopen("anotherImage.png", "wb");
-    if (!fp)
-            abort_("[write_png_file] File %s could not be opened for writing", file_name);
+    if (!fp){
+		std::cout << "[write_png_file] File %s could not be opened for writing" << file_name << std::endl;
+		return;
+	}
 
 
     /* initialize stuff */
     png_ptr = png_create_write_struct(PNG_LIBPNG_VER_STRING, NULL, NULL, NULL);
 
-    if (!png_ptr)
-            abort_("[write_png_file] png_create_write_struct failed");
+    if (!png_ptr){
+		std::cout << "[write_png_file] png_create_write_struct failed" << std::endl;
+		return;
+	}
 
     info_ptr = png_create_info_struct(png_ptr);
-    if (!info_ptr)
-            abort_("[write_png_file] png_create_info_struct failed");
+    if (!info_ptr){
+		std::cout << "[write_png_file] png_create_info_struct failed" << std::endl;
+		return;
+	}
 
-    if (setjmp(png_jmpbuf(png_ptr)))
-            abort_("[write_png_file] Error during init_io");
+    if (setjmp(png_jmpbuf(png_ptr))){
+            std::cout << "[write_png_file] Error during init_io" << std::endl;
+			return;
+	}
 
     png_init_io(png_ptr, fp);
 
 
     /* write header */
-    if (setjmp(png_jmpbuf(png_ptr)))
-            abort_("[write_png_file] Error during writing header");
+    if (setjmp(png_jmpbuf(png_ptr))){
+            std::cout << "[write_png_file] Error during writing header"<< std::endl;
+			return;
+	}
 
     png_set_IHDR(png_ptr, info_ptr, width, height,
                  bit_depth, color_type, PNG_INTERLACE_NONE,
@@ -136,48 +151,21 @@ void PngImage::SavePngFile(char* file_name)
 
 
     /* write bytes */
-    if (setjmp(png_jmpbuf(png_ptr)))
-            abort_("[write_png_file] Error during writing bytes");
+    if (setjmp(png_jmpbuf(png_ptr))){
+            std::cout <<"[write_png_file] Error during writing bytes"<< std::endl;
+			return;
+	}
 
     png_write_image(png_ptr, row_pointers);
 
 
     /* end write */
-    if (setjmp(png_jmpbuf(png_ptr)))
-            abort_("[write_png_file] Error during end of write");
+    if (setjmp(png_jmpbuf(png_ptr))){
+            std::cout <<"[write_png_file] Error during end of write"<< std::endl;
+			return;
+	}
 
     png_write_end(png_ptr, NULL);
 
-    /* cleanup heap allocation */
-    for (y=0; y<height; y++)
-            free(row_pointers[y]);
-    free(row_pointers);
-
     fclose(fp);
-}
-
-
-void PngImage::process_file(void)
-{
-	std::cout << "process file" << std::endl;
-        if (png_get_color_type(png_ptr, info_ptr) == PNG_COLOR_TYPE_RGB)
-                abort_("[process_file] input file is PNG_COLOR_TYPE_RGB but must be PNG_COLOR_TYPE_RGBA "
-                       "(lacks the alpha channel)");
-
-        if (png_get_color_type(png_ptr, info_ptr) != PNG_COLOR_TYPE_RGBA)
-                abort_("[process_file] color_type of input file must be PNG_COLOR_TYPE_RGBA (%d) (is %d)",
-                       PNG_COLOR_TYPE_RGBA, png_get_color_type(png_ptr, info_ptr));
-
-        for (y=0; y<height; y++) {
-                png_byte* row = row_pointers[y];
-                for (x=0; x<width; x++) {
-                        png_byte* ptr = &(row[x*4]);
-                        //printf("Pixel at position [ %d - %d ] has RGBA values: %d - %d - %d - %d\n",
-                        //       x, y, ptr[0], ptr[1], ptr[2], ptr[3]);
-
-                        /* set red value to 0 and green value to the blue one */
-                        ptr[0] = 0;
-                        ptr[1] = ptr[2];
-                }
-        }
 }

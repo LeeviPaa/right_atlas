@@ -7,19 +7,15 @@
 
 #define PNG_DEBUG 3
 #include <png.h>
+#include <string>
 
 class PngImage
 {
 public:
+	std::string name;
 	int width, height, area;
-
-	PngImage(void){}
-	int OpenImage(const char* location);
-	void SavePngFile(char* location);
-	void process_file(void);
-
-	int x, y;
 	int posX, posY;
+	
 	png_byte color_type;
 	png_byte bit_depth;
 	
@@ -28,7 +24,14 @@ public:
 	int number_of_passes;
 	png_bytep * row_pointers;
 
-	static bool CompareImageSize(PngImage* a, PngImage* b) { return (a->area > b->area); }
+	PngImage(){ 
+		row_pointers = nullptr;
+	}
+	~PngImage();
+	int OpenImage(const char* file_path, const char* file_name);
+	void SavePngFile(char* location);
+	void process_file(void);
 
+	static bool CompareImageSize(PngImage* a, PngImage* b) { return (a->area > b->area); }
 };
 

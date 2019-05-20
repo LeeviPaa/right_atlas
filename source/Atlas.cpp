@@ -1,19 +1,20 @@
 #include "Atlas.h"
 #include <iostream>
+#include <fstream>
 #include <math.h>
 
-void Atlas::SaveAtlas(char* filename, char* title, std::vector<PngImage *> images)
+void Atlas::SaveAtlas(char* filename, char* title, std::vector<PngImage *> &images)
 {
 	int code = 0;
 	FILE *fp = NULL;
 	png_structp png_ptr = NULL;
 	png_infop info_ptr = NULL;
 	png_bytep row = NULL;
-	int xPos = 0, yPos = 0;
-   	int x, y;
-	int largestHeight;
-	float imageCount = images.size();
-	int verticalImages = (int)std::sqrt(imageCount);
+	xPos = 0, yPos = 0;
+	int x, y;
+
+	totalImageCount = images.size();
+	verticalImageCount = (int)std::sqrt(totalImageCount);
 	
 	// Open file for writing (binary mode)
 	fp = fopen(filename, "wb");
@@ -49,15 +50,15 @@ void Atlas::SaveAtlas(char* filename, char* title, std::vector<PngImage *> image
 	width = 0;
 	height = 0;
 	
-	if(verticalImages == 0)
-	   verticalImages = 1;
+	if(verticalImageCount == 0)
+	   verticalImageCount = 1;
 	
 	//TODO: Define positions here!
 	for(int i=0; i<images.size(); ++i)
 	{
 		PngImage* img = images[i];
 	
-		if(i % verticalImages == 0)
+		if(i % verticalImageCount == 0)
 		{
 			height += img->height;
 		}
@@ -84,10 +85,10 @@ void Atlas::SaveAtlas(char* filename, char* title, std::vector<PngImage *> image
 	
 	png_write_info(png_ptr, info_ptr);
 	
-	// Allocate memory for one row (3 bytes per pixel - RGB)
-	row_pointers = (png_bytep*) malloc(sizeof(png_bytep) * height);
-	 for (y=0; y<height; y++)
-	         row_pointers[y] = (png_byte*) malloc(3 * width * sizeof(png_byte));
+	// Allocate array for one row (3 bytes per pixel - RGB)
+	row_pointers = new png_bytep[height];
+	for (y=0; y<height; y++)
+		row_pointers[y] = new png_byte[3 * width];
 	
 	//write images to the atlas
 	
@@ -146,5 +147,22 @@ void Atlas::SaveAtlas(char* filename, char* title, std::vector<PngImage *> image
 	if (info_ptr != NULL) png_free_data(png_ptr, info_ptr, PNG_FREE_ALL, -1);
 	if (png_ptr != NULL) png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
 	if (row != NULL) free(row);
+}
+
+void Atlas::SaveMetadata(std::vector<PngImage*> &images)
+{
+	std::ofstream file;
+	file.open ("metadata.txt");
+	for(int i=0; i<images.size(); ++i)
+	{
+		PngImage* img = images[i];
+		file << "name="<< img->name;
+		file << " width="<< img->width;
+		file << " height="<< img->height;
+		file << " x="<< img->posX;
+		file << " y="<< img->posY;
+		file <<"\n";
+	}
+	file.close();
 }
 
