@@ -108,7 +108,7 @@ int PngImage::OpenImage(const char* file_path, const char* file_name)
 void PngImage::SavePngFile(char* file_name)
 {
     /* create file */
-    FILE *fp = fopen("anotherImage.png", "wb");
+    FILE *fp = fopen(file_name, "wb");
     if (!fp){
 		std::cout << "[write_png_file] File %s could not be opened for writing" << file_name << std::endl;
 		return;
@@ -168,4 +168,9 @@ void PngImage::SavePngFile(char* file_name)
     png_write_end(png_ptr, NULL);
 
     fclose(fp);
+	/*finalise:
+	if (fp != NULL) fclose(fp);
+	if (info_ptr != NULL) png_free_data(png_ptr, info_ptr, PNG_FREE_ALL, -1);
+	if (png_ptr != NULL) png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
+	if (row != NULL) free(row);*/
 }

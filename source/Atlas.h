@@ -2,10 +2,10 @@
 #include "PngImage.h"
 #include <vector>
 
-class Atlas : PngImage
+class Atlas : public PngImage
 {
 public:
-	void SaveAtlas(char* filename, char* title, std::vector<PngImage *> &images);
+	void CreateAtlas(char* filename, char* title, std::vector<PngImage *> &images);
 	void SaveMetadata(std::vector<PngImage*> &images);
 private:
 	int xPos, yPos;

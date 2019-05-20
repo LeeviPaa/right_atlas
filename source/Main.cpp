@@ -67,7 +67,8 @@ int main (int argc, char* argv[])
 	if(images.size() > 0)
 	{
 		PngImage* imgPtr = images[0];
-		atlas.SaveAtlas("Dump/Atlas.png", "image", images);
+		atlas.CreateAtlas("Dump/Atlas.png", "image", images);
+		atlas.SavePngFile("Dump/Atlas.png");
 		atlas.SaveMetadata(images);
 	}
 	else
