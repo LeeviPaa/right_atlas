@@ -5,13 +5,12 @@
 class Atlas : public PngImage
 {
 public:
-	void CreateAtlas(char* filename, char* title, std::vector<PngImage *> &images);
-	void SaveMetadata(std::vector<PngImage*> &images);
+	void CreateAtlas(std::vector<PngImage *> &images);
+	void SaveMetadata(const char* filepath, std::vector<PngImage*> &images);
 private:
 	int xPos, yPos;
    	int x, y;
 	int largestHeight;
-	int verticalImageCount;
 	float totalImageCount;
 
 };

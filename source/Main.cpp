@@ -15,9 +15,9 @@
 
 int main (int argc, char* argv[])
 {
-	if (argc != 3)
+	if (argc != 2)
 	{
-		std::cout << "Usage: program_name <file_in> <file_out>" << std::endl;
+		std::cout << "Parameters: <image_location>" << std::endl;
 		return -1;
 	}
 
@@ -25,7 +25,7 @@ int main (int argc, char* argv[])
 	struct dirent *ent;
 	std::vector<PngImage*> images;
 	Atlas atlas;
-	std::string path = "images/";
+	std::string path = argv[1];
 
 	if ((dir = opendir (path.c_str())) != NULL) {
 	  while ((ent = readdir (dir)) != NULL) {
@@ -59,7 +59,6 @@ int main (int argc, char* argv[])
 	else 
 	{
 	  std::cout << "could not open directory" << std::endl;
-	  system("pause");
 	  return -1;
 	}
 
@@ -67,20 +66,18 @@ int main (int argc, char* argv[])
 	if(images.size() > 0)
 	{
 		PngImage* imgPtr = images[0];
-		atlas.CreateAtlas("Dump/Atlas.png", "image", images);
-		atlas.SavePngFile("Dump/Atlas.png");
-		atlas.SaveMetadata(images);
+		atlas.CreateAtlas(images);
+		atlas.SavePngFile("atlas.png");
+		atlas.SaveMetadata("metadata.txt",images);
 	}
 	else
 	{
 		std::cout << "no png files found" << std::endl;
-		system("pause");
 		return -1;
 	}
 
 	for(int i=0; i<images.size(); ++i)
 		delete(images[i]);
 
-	system("pause");
 	return 0;
 }

@@ -3,33 +3,54 @@
 #include <fstream>
 #include <math.h>
 
-void Atlas::CreateAtlas(char* filename, char* title, std::vector<PngImage *> &images)
+void Atlas::CreateAtlas(std::vector<PngImage *> &images)
 {
 	xPos = 0, yPos = 0;
-	int x, y;
+	width = 0, height = 0;
+	float totalArea = 0, approximateWidth = 0;
 
-	totalImageCount = images.size();
-	verticalImageCount = (int)std::sqrt(totalImageCount);
-	
-	width = 0;
-	height = 0;
-	
-	if(verticalImageCount == 0)
-	   verticalImageCount = 1;
-	
-	//TODO: Define positions here!
 	for(int i=0; i<images.size(); ++i)
 	{
 		PngImage* img = images[i];
-	
-		if(i % verticalImageCount == 0)
-		{
-			height += img->height;
-		}
-		else
-			width += img->width;
-			
+		totalArea += img->area;
 	}
+
+	approximateWidth = (int)std::sqrt(totalArea);
+
+	//we define the dimensons of the atlas and positions of the images
+	int maxHeight = 0, maxWidth = 0;
+	for(int i=0; i<images.size(); ++i)
+	{
+		PngImage* img = images[i];
+		img->posX = 0;
+		img->posY = 0;
+
+		if(img->height > maxHeight)
+			maxHeight = img->height;
+
+		img->posX = xPos;
+
+		if(xPos > maxWidth)
+				maxWidth = xPos;
+
+		xPos += img->width;
+
+		if(xPos > approximateWidth)
+		{
+			height += maxHeight;
+
+			yPos += maxHeight;
+
+			xPos = img->width;
+			img->posX = 0;
+			maxHeight = 0;
+		}
+		
+		img->posY = yPos;
+
+	}
+	height += maxHeight;
+	width = maxWidth;
 
 	bit_depth = 8;
 	color_type = PNG_COLOR_TYPE_RGB;
@@ -48,31 +69,20 @@ void Atlas::CreateAtlas(char* filename, char* title, std::vector<PngImage *> &im
 		row_pointers[y] = new png_byte[3 * width];
 	
 	//write images to the atlas
-	
 	for(int i=0; i<images.size(); ++i)
 	{
 		PngImage* img = images[i];
+
+		int currX = img->posX;
+		int currY = img->posY;
 	
-		if(img->height > largestHeight)
-			largestHeight = img->height;
-	
-		if(xPos + img->width > width)
-		{
-			xPos = 0;
-			yPos += largestHeight;
-			largestHeight = 0;
-		}
-	
-		img->posX = xPos;
-		img->posY = yPos;
-	
-		for (y = 0 ; y < img->height ; y++) 
+		for (int y = 0 ; y < img->height ; y++) 
 		{
 			png_byte* rowCopy = img->row_pointers[y];
-			png_byte* row = row_pointers[yPos+y];
+			png_byte* row = row_pointers[currY+y];
 	
-			for (x = 0 ; x < img->width ; x++) {
-				png_byte* ptr = &(row[(xPos+x)*3]);
+			for (int x = 0 ; x < img->width ; x++) {
+				png_byte* ptr = &(row[(currX+x)*3]);
 	
 				png_byte* ptrCopy = NULL;
 	
@@ -85,20 +95,19 @@ void Atlas::CreateAtlas(char* filename, char* title, std::vector<PngImage *> &im
 					std::cout << "invalid image color type!" << (int)img->color_type << std::endl; 
 					return;
 				}
-			
+
 				ptr[0] = ptrCopy[0];
 				ptr[1] = ptrCopy[1];
 				ptr[2] = ptrCopy[2];
 			}
 		}
-		xPos += img->width;
 	}
 }
 
-void Atlas::SaveMetadata(std::vector<PngImage*> &images)
+void Atlas::SaveMetadata(const char* filepath, std::vector<PngImage*> &images)
 {
 	std::ofstream file;
-	file.open ("metadata.txt");
+	file.open (filepath);
 	for(int i=0; i<images.size(); ++i)
 	{
 		PngImage* img = images[i];

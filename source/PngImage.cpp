@@ -72,18 +72,14 @@ int PngImage::OpenImage(const char* file_path, const char* file_name)
 
 	if(color_type != 2 && color_type != 6)
 	{
-		std::cout << "we dont yet support other color types than RGB!" << std::endl;
+		std::cout << "we dont yet support other color types than RGB and RGBA!" << std::endl;
 		return -1;
 	}
-	else
-		std::cout << "color type "<< int(color_type) << std::endl;
 
     bit_depth = png_get_bit_depth(png_ptr, info_ptr);
-	std::cout << "bit depth "<< int(bit_depth) << std::endl;
 
 
     number_of_passes = png_set_interlace_handling(png_ptr);
-	std::cout << "passes "<< int(number_of_passes) << std::endl;
     png_read_update_info(png_ptr, info_ptr);
 
 
