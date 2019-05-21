@@ -45,6 +45,10 @@ int main (int argc, char* argv[])
 
 			std::string imgPath = "";
 			imgPath.append(path);
+
+			if(imgPath.back() != '/')
+				imgPath.append("/");
+
 			imgPath.append(ent->d_name);
 
 			if(image->OpenImage(imgPath.c_str(), ent->d_name) == 0)
