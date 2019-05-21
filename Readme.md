@@ -1,9 +1,3 @@
-I have zipped the source code for linux and windows in separate .zip files 
-These also include the project files
-
-You can also download it from gitgub: https://github.com/LeeviPaa/right_atlas
-and generate the project files with cmake
-
 DESCRIPTION:
 This is a solution that reads all the .png files from a folder and makes an atlas from them
 This project uses libpng as I did not want to use a big complex library with a lot of dependencies 
