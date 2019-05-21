@@ -13,6 +13,8 @@
 
 PngImage::~PngImage()
 {
+	if (info_ptr != NULL) png_free_data(png_ptr, info_ptr, PNG_FREE_ALL, -1);
+
 	if(row_pointers == nullptr)
 		return;
 
@@ -101,7 +103,7 @@ int PngImage::OpenImage(const char* file_path, const char* file_name)
 	return 0;
 }
 
-void PngImage::SavePngFile(char* file_name)
+void PngImage::SavePngFile(const char* file_name)
 {
     /* create file */
     FILE *fp = fopen(file_name, "wb");
@@ -164,9 +166,6 @@ void PngImage::SavePngFile(char* file_name)
     png_write_end(png_ptr, NULL);
 
     fclose(fp);
-	/*finalise:
-	if (fp != NULL) fclose(fp);
-	if (info_ptr != NULL) png_free_data(png_ptr, info_ptr, PNG_FREE_ALL, -1);
+
 	if (png_ptr != NULL) png_destroy_write_struct(&png_ptr, (png_infopp)NULL);
-	if (row != NULL) free(row);*/
 }

@@ -29,7 +29,7 @@ public:
 	}
 	~PngImage();
 	int OpenImage(const char* file_path, const char* file_name);
-	void SavePngFile(char* location);
+	void SavePngFile(const char* location);
 	void process_file(void);
 
 	static bool CompareImageSize(PngImage* a, PngImage* b) { return (a->area > b->area); }
