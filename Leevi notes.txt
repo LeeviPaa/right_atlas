@@ -16,7 +16,7 @@ Most companies have naming conventions so I did not think this was an issue
 
 DEPENDENCIES:
 libpng (libraries for windows included)
-dirent (header for windows included)
+dirent (header for windows included, and for linux it is standard header)
 
 
 BUILD ON UBUNTU:
